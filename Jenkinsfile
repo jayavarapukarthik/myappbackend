@@ -13,7 +13,7 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                echo 'Cloning repository from Github...'
+                echo 'Cloning repository from GitLab...'
                 sh """
                 rm -rf ${WORKDIR}
                 git clone -b ${BRANCH} ${REPO_URL} ${WORKDIR}
