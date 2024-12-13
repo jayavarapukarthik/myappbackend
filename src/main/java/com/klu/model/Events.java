@@ -10,6 +10,7 @@ public class Events {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	
+	
 	private Long mid;
 	private String mname;
 	private int mcost;
