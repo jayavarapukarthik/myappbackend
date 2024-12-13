@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        REPO_URL = 'https://github.com/jayavarapukarthik/myappbackend.git' // GitHub Repository
-        BRANCH = 'main' // GitHub branch to clone
+        REPO_URL = 'https://github.com/jayavarapukarthik/myappbackend.git'
+        BRANCH = 'main'
         DOCKER_IMAGE = 'online-ticket-booking'
         TARGET_PORT = '8999'
         LOCAL_PORT = '8015'
@@ -13,10 +13,11 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                echo 'Cloning repository from GitHub...'
-                // Use Jenkins Git step for better integration
-                git branch: "${BRANCH}",
-                    url: "${REPO_URL}"
+                echo 'Cloning repository from Github...'
+                sh """
+                rm -rf ${WORKDIR}
+                git clone -b ${BRANCH} ${REPO_URL} ${WORKDIR}
+                """
             }
         }
 
@@ -42,12 +43,8 @@ pipeline {
             steps {
                 echo 'Running Docker container...'
                 sh """
-                # Stop and remove container if it exists
-                if [ \$(docker ps -a -q -f name=${DOCKER_IMAGE}) ]; then
-                    docker stop ${DOCKER_IMAGE}
-                    docker rm ${DOCKER_IMAGE}
-                fi
-                # Run new container
+                docker stop ${DOCKER_IMAGE} || true
+                docker rm ${DOCKER_IMAGE} || true
                 docker run -d -p ${LOCAL_PORT}:${TARGET_PORT} --name ${DOCKER_IMAGE} ${DOCKER_IMAGE}
                 """
             }
@@ -62,4 +59,4 @@ pipeline {
             echo 'Deployment failed. Check logs for details.'
         }
     }
-}
+}	
