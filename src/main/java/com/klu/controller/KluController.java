@@ -18,6 +18,7 @@ import com.klu.model.Events;
 
 import com.klu.model.Login;
 import com.klu.model.Movies;
+import com.klu.service.EmailService;
 import com.klu.service.KluService;
 
 @RestController
@@ -25,6 +26,23 @@ import com.klu.service.KluService;
 public class KluController {
 		@Autowired
 		private KluService service;
+		
+		@Autowired
+	    private EmailService emailService;
+		// New endpoint to send an email
+	    @GetMapping("/send-email/{to}")
+	    public String sendEmail(@PathVariable String to) {
+	        String subject = "Order Confirmation";
+	        String text = "Thank you for your order. Your payment has been received.";
+	        
+	        try {
+	            emailService.sendEmail(to, subject, text);
+	            return "Email sent successfully to " + to;
+	        } catch (Exception e) {
+	            return "Error sending email: " + e.getMessage();
+	        }
+	    }
+	
 		
 		@GetMapping("/movies")
 		public List<Movies> displayAllMovies(){
